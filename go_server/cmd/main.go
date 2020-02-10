@@ -17,6 +17,7 @@ func main() {
 	server := grpc.NewServer()
 	myGreeterService := &MyGreeterService{}
 	pb.RegisterGreeterServer(server, myGreeterService)
+	log.Println("server started")
 	server.Serve(port)
 }
 
@@ -24,7 +25,8 @@ type MyGreeterService struct {
 	pb.UnimplementedGreeterServer
 }
 
-func (s MyGreeterService) HelloWorld(ctx context.Context, req *pb.HelloRequest) (*pb.HelloResponse, error) {
+func (s MyGreeterService) HelloWorld(_ context.Context, req *pb.HelloRequest) (*pb.HelloResponse, error) {
+	log.Println("service:helloworld start")
 	if req.Name == "" {
 		return nil, errors.New("name is necessary")
 	}

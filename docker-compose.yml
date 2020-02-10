@@ -1,6 +1,24 @@
 version: "3"
 services:
-  server:
-    build: .
+  go_server:
+    build: ./go_server
     ports:
       - "19003:19003"
+  envoy:
+    image: envoyproxy/envoy-alpine-debug:latest
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml
+    depends_on:
+      - go_server
+  web_client:
+    build: ./web_client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web_client/src:/app/src
+      - ./web_client/public:/app/public
+      - ./web_client/package.json:/app/package.json
+      - ./web_client/yarn.lock:/app/yarn.lock
